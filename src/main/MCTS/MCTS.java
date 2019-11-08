@@ -73,21 +73,20 @@ public class MCTS {
     private MCTSNode bestChild(MCTSNode node, int globalVisitCount) {
         float currentValue = -Float.MAX_VALUE;
         int choiceIndex = 0;
-        for (int i = 0; i < m_rootMCTSNode.getChildren().size(); i++) {
-            MCTSNode child = (MCTSNode) m_rootMCTSNode.getChildren().get(i);
+        for (int i = 0; i < node.getChildren().size(); i++) {
+            MCTSNode child = (MCTSNode) node.getChildren().get(i);
             // Calculate the value
             float exploitValue = (float) child.getWinCount() / (float) child.getVisitCount();
             // TODO: Check if the formula is correct
             float exploreValue =
-                    m_factor * (float) Math.sqrt(Math.log( (float) node.getVisitCount() / (float) child.getVisitCount()));
+                    m_factor * (float) Math.sqrt(Math.log( (float) globalVisitCount / (float) child.getVisitCount()));
             float value = exploitValue + exploreValue;
             if (value > currentValue) {
                 currentValue = value;
                 choiceIndex = i;
             }
-            return (MCTSNode) node.getChildren().get(choiceIndex);
         }
-        return null;
+        return (MCTSNode) node.getChildren().get(choiceIndex);
     }
 
     private Player simulation(MCTSNode leafMCTSNode) {
