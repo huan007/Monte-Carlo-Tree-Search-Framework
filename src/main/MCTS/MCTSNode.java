@@ -11,13 +11,13 @@ public class MCTSNode {
     private List<MCTSNode> m_children;
     private GameState m_gameState;
 
-    public MCTSNode(GameState gameState) {
+    public MCTSNode(GameState gameState, MCTSNode parent) {
         m_visitCount = 0;
         m_winCount = 0;
-        m_parent = null;
+        m_parent = parent;
         m_lastMove = null;
         m_children = new ArrayList<>();
-        m_gameState = gameState;
+        m_gameState = gameState.deepCopy();
     }
 
     public List<MCTSNode> getChildren() {
@@ -59,7 +59,7 @@ public class MCTSNode {
     public MCTSNode createChildNodeWithMove(Move move) {
         GameState nextGameState = m_gameState.deepCopy();
         nextGameState.moveToNextState(move);
-        MCTSNode newMCTSNode = new MCTSNode(nextGameState);
+        MCTSNode newMCTSNode = new MCTSNode(nextGameState, this);
         newMCTSNode.setLastMove(move);
         return newMCTSNode;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class MCTS {
     private int m_stepSize;
+    private int m_globalVisitCount;
     private float m_factor;
     private MCTSNode m_rootMCTSNode;
     private List<Player> m_possiblePlayers;
@@ -13,8 +14,11 @@ public class MCTS {
 
     }
 
-    private MCTS() {
-
+    public MCTS(int stepSize, float factor, GameState gameState) {
+        m_globalVisitCount = 0;
+        m_stepSize = stepSize;
+        m_factor = factor;
+        m_rootMCTSNode = new MCTSNode(gameState, null);
     }
 
     public Move uct_search() {
@@ -27,7 +31,7 @@ public class MCTS {
          *  return Action(argmax)
          */
         for (int iteration = 0; iteration < m_stepSize; iteration++) {
-            MCTSNode leafMCTSNode = selection(m_rootMCTSNode);
+            MCTSNode leafMCTSNode = selection(m_rootMCTSNode, iteration);
             Player winner = simulation(leafMCTSNode);
             backPropagation(leafMCTSNode, winner);
         }
@@ -44,14 +48,14 @@ public class MCTS {
         return ((MCTSNode) m_rootMCTSNode.getChildren().get(choiceIndex)).getLastMove();
     }
 
-    private MCTSNode selection(MCTSNode rootMCTSNode) {
+    private MCTSNode selection(MCTSNode rootMCTSNode, int globalVisitCount) {
         MCTSNode node = rootMCTSNode;
         while (!node.isTerminal()) {
             // Expand if needed
             if (!node.isFullyExpanded())
                 return expansion(node);
             // Else select best child and return
-            else node = bestChild(node);
+            else node = bestChild(node, globalVisitCount);
         }
         return node;
     }
@@ -66,7 +70,7 @@ public class MCTS {
         return newMCTSNode;
     }
 
-    private MCTSNode bestChild(MCTSNode node) {
+    private MCTSNode bestChild(MCTSNode node, int globalVisitCount) {
         float currentValue = -Float.MAX_VALUE;
         int choiceIndex = 0;
         for (int i = 0; i < m_rootMCTSNode.getChildren().size(); i++) {
@@ -100,7 +104,7 @@ public class MCTS {
         while (node != null) {
             node.incrementVisitCount();
             int point = 0;
-            if (node.getGameState().isWinner(winner))
+            if (node.getGameState().isSuccessful(winner))
                 // Aggregate win points
                 node.incrementWinCount();
 

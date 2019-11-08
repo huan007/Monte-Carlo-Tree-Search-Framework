@@ -1,22 +1,44 @@
 package MCTS;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class GameState {
-    private boolean m_isTerminal;
-    private Player m_player;
-    private Player m_winner;
-    private List<Move> m_possibleMoves;
+    protected boolean m_isTerminal;
+    protected Player m_player;
+    protected Player m_nextPlayer;
+    protected Player m_winner;
+    protected List<Move> m_possibleMoves;
 
     public abstract GameState deepCopy();
     protected abstract void makeMove(Move move);
+    protected abstract Player determineNextPlayer();
     protected abstract void determineTerminalAndWinner();
     protected abstract void generateNextPossibleMoves();
+    protected abstract boolean isSuccessful(Player winner);
 
+    public GameState(Player player) {
+        setPlayer(player);
+        m_isTerminal = false;
+        m_winner = null;
+        m_possibleMoves = new ArrayList<Move>();
+    }
+
+    public GameState(GameState oldState) {
+        this.m_isTerminal = oldState.m_isTerminal;
+        this.m_player = oldState.m_player;
+        this.m_nextPlayer = oldState.m_nextPlayer;
+        this.m_winner = oldState.m_winner;
+        this.m_possibleMoves = new ArrayList<Move>(oldState.m_possibleMoves);
+    }
 
     public Player getPlayer() {
         return m_player;
+    }
+
+    public Player getNextPlayer() {
+        return m_nextPlayer;
     }
 
     public Player getWinner() {
@@ -36,11 +58,18 @@ public abstract class GameState {
     }
 
     public void setPlayer(Player player) {
+        // Set Current Player and update nextPlayer
         m_player = player;
+        m_nextPlayer = determineNextPlayer();
+    }
+
+    public void setWinner(Player winner) {
+        m_winner = winner;
     }
 
     public void moveToNextState(Move move) {
         makeMove(move);
+        setPlayer(m_nextPlayer);
         determineTerminalAndWinner();
         generateNextPossibleMoves();
     }

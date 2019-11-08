@@ -1,18 +1,18 @@
 package MCTS;
 
 public class Move<T> {
-    private String m_moveName;
-    private T m_moveValue;
+    protected String m_moveName;
+    protected T m_moveValue;
     public Move(String moveName, T moveValue) {
         m_moveName = moveName;
         m_moveValue = moveValue;
     }
 
-    public String getM_moveName() {
+    public String getMoveName() {
         return m_moveName;
     }
 
-    public T getM_moveValue() {
+    public T getMoveValue() {
         return m_moveValue;
     }
 }
