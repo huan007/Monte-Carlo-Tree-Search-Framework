@@ -50,9 +50,12 @@ public class GameState2048 extends GameState {
     }
 
     @Override
-    protected void determineTerminalAndWinner() {
-        // Determine if terminal
-        m_isTerminal = !checkIfCanGo(m_boardValues);
+    protected boolean determineTerminal() {
+        return !checkIfCanGo(m_boardValues);
+    }
+
+    @Override
+    protected Player determineWinner() {
         int largestValue = 0;
         for (int x = 0; x < m_boardSize; x++) {
             for (int y = 0; y < m_boardSize; y++) {
@@ -62,7 +65,8 @@ public class GameState2048 extends GameState {
         }
         // Only "win" if we made impressive progress
         if (largestValue >= 13)
-            m_winner = player;
+            return player;
+        else return null;
     }
 
     @Override

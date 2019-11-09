@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MCTSNode {
     private int m_visitCount;
-    private int m_winCount;
+    private float m_winCount;
     private MCTSNode m_parent;
     private Move m_lastMove;
     private List<MCTSNode> m_children;
@@ -28,7 +28,7 @@ public class MCTSNode {
         return m_lastMove;
     }
 
-    public int getWinCount() {
+    public float getWinCount() {
         return m_winCount;
     }
 
@@ -48,8 +48,8 @@ public class MCTSNode {
         m_visitCount++;
     }
 
-    public void incrementWinCount() {
-        m_winCount++;
+    public void incrementWinCount(float rewardPoint) {
+        m_winCount += rewardPoint;
     }
 
     public void addChild(MCTSNode childMCTSNode) {

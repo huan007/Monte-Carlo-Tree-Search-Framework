@@ -9,6 +9,7 @@ public class MCTS {
     private MCTSNode m_rootMCTSNode;
     private List<Player> m_possiblePlayers;
     private List<Move> m_possibleMoves;
+    private RewardFunctionInterface m_rewardFunction;
 
     public static class Builder {
 
@@ -19,6 +20,12 @@ public class MCTS {
         m_stepSize = stepSize;
         m_factor = factor;
         m_rootMCTSNode = new MCTSNode(gameState, null);
+        m_rewardFunction = new RewardFunctionInterface() {
+            @Override
+            public float calculateReward(GameState gameState) {
+                return 1;
+            }
+        };
     }
 
     public Move uct_search() {
@@ -100,15 +107,24 @@ public class MCTS {
 
     private void backPropagation(MCTSNode leafMCTSNode, Player winner) {
         MCTSNode node = leafMCTSNode;
+        float rewardPoint = m_rewardFunction.calculateReward(leafMCTSNode.getGameState());
         while (node != null) {
             node.incrementVisitCount();
             int point = 0;
             if (node.getGameState().isSuccessful(winner))
                 // Aggregate win points
-                node.incrementWinCount();
+                node.incrementWinCount(rewardPoint);
 
             // MCTS.Move up the tree
             node = node.getParent();
         }
+    }
+
+    public void setRewardFunction(RewardFunctionInterface rewardFunction) {
+        m_rewardFunction = rewardFunction;
+    }
+
+    public interface RewardFunctionInterface {
+        float calculateReward(GameState gameState);
     }
 }

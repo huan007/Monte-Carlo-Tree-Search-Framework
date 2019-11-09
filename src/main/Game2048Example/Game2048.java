@@ -7,8 +7,8 @@ public class Game2048 {
 
     public static void main(String[] args) {
         // MCTS Parameters
-        int stepSize = 200000;
-        float factor = 15;
+        int stepSize = 10000;
+        float factor = 10;
         int numberOfGames = 100;
 
         // Game Parameters

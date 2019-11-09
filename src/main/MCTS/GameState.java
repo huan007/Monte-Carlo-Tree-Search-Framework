@@ -14,7 +14,8 @@ public abstract class GameState {
     public abstract GameState deepCopy();
     protected abstract void makeMove(Move move);
     protected abstract Player determineNextPlayer();
-    protected abstract void determineTerminalAndWinner();
+    protected abstract boolean determineTerminal();
+    protected abstract Player determineWinner();
     protected abstract void generateNextPossibleMoves();
     protected abstract boolean isSuccessful(Player winner);
 
@@ -70,7 +71,10 @@ public abstract class GameState {
     public void moveToNextState(Move move) {
         makeMove(move);
         setPlayer(m_nextPlayer);
-        determineTerminalAndWinner();
+        m_isTerminal = determineTerminal();
+        // Only determine winner if terminal
+        if (isTerminal())
+            m_winner = determineWinner();
         generateNextPossibleMoves();
     }
 
