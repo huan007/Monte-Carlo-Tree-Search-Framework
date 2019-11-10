@@ -12,8 +12,10 @@ public class TicTacToe {
     public static void main(String args[]) {
         int boardSize = 3;
         int stepSize = 10000;
+        // Time duration in milliseconds
+        long timeDuration = 250;
         float factor = 3;
-        int numberOfGames = 1000;
+        int numberOfGames = 200;
         int loseCount = 0;
         for (int i = 0; i < numberOfGames; i++) {
             int[][] board = new int[boardSize][boardSize];
@@ -24,13 +26,13 @@ public class TicTacToe {
                 System.out.println("---------------");
                 if (playerNumber == 0) {
                     // Player X ( MCTS )
-                    MCTS mcts = new MCTS(stepSize, factor, gameState);
+                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
                     Move nextMove = mcts.uct_search();
                     gameState.moveToNextState(nextMove);
                 }
                 else {
                     // Player O ( MCTS )
-                    MCTS mcts = new MCTS(stepSize, factor, gameState);
+                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
                     Move nextMove = mcts.uct_search();
                     gameState.moveToNextState(nextMove);
                 }
