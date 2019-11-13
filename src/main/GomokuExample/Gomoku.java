@@ -1,6 +1,7 @@
 package GomokuExample;
 
 import MCTS.MCTS;
+import MCTS.Move;
 
 import java.util.Scanner;
 
@@ -9,17 +10,20 @@ public class Gomoku {
     public static void main(String[] args) {
         int boardSize = 19;
         int[][] board = new int[boardSize][boardSize];
-        GomokuGameState gameState = new GomokuGameState(GomokuGameState.BLACK_PLAYER, board);
-        int playerNumber = 0;
-        Scanner scanner = new Scanner(System.in);
+        GomokuGameState gameState = new GomokuGameState(GomokuGameState.WHITE_PLAYER, board);
+        int stepSize = 10000;
+        // Time duration in milliseconds
+        long timeDuration = 500;
+        float factor = (float) 0.0005;
+        System.out.println(gameState.toString());
+        System.out.println("---------------");
         while (!gameState.isTerminal()) {
+            MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
+            Move nextMove = mcts.uct_search();
+            gameState.moveToNextState(nextMove);
+            System.out.println(String.format("Next move: %s", nextMove.toString()));
             System.out.println(gameState.toString());
             System.out.println("---------------");
-            Point nextMoveCoordinates = inputToPoint(scanner.nextLine());
-            if (nextMoveCoordinates == null)
-                continue;
-            GomokuMove nextMove = new GomokuMove(nextMoveCoordinates.toString(), nextMoveCoordinates);
-            gameState.moveToNextState(nextMove);
         }
     }
 

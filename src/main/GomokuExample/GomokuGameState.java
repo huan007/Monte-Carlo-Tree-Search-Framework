@@ -82,27 +82,39 @@ public class GomokuGameState extends GameState {
         // Check for consecutive vertical pieces
         for (int x = 0; x < m_boardSize; x++) {
             int consecutiveCount = 0;
+            List<Point> consecutivePieces = new ArrayList<>();
             for (int y = 0; y < m_boardSize; y++) {
-                if (m_boardValues[x][y] == playerValue)
+                if (m_boardValues[x][y] == playerValue) {
                     consecutiveCount++;
+                    consecutivePieces.add(new Point(x,y));
+                }
                 // If not then reset counter
-                else
+                else {
                     consecutiveCount = 0;
-                if (consecutiveCount >= MINIMUM_CONSECUTIVE_PIECES)
+                    consecutivePieces.clear();
+                }
+                if (consecutiveCount >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
+                }
             }
 
         }
         // Check for consecutive horizontal pieces
         for (int y = 0; y < m_boardSize; y++) {
             int consecutiveCount = 0;
+            List<Point> consecutivePieces = new ArrayList<>();
             for (int x = 0; x < m_boardSize; x++) {
-                if (m_boardValues[x][y] == playerValue)
+                if (m_boardValues[x][y] == playerValue) {
                     consecutiveCount++;
-                else
+                    consecutivePieces.add(new Point(x,y));
+                }
+                else {
                     consecutiveCount = 0;
-                if (consecutiveCount >= MINIMUM_CONSECUTIVE_PIECES)
+                    consecutivePieces.clear();
+                }
+                if (consecutiveCount >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
+                }
             }
         }
         // Check for diagonal pieces with -1 slope
@@ -110,22 +122,35 @@ public class GomokuGameState extends GameState {
             int x = 0;
             int consecutiveCount1 = 0;
             int consecutiveCount2 = 0;
+            List<Point> consecutivePieces1 = new ArrayList<>();
+            List<Point> consecutivePieces2 = new ArrayList<>();
             for (int y = startY; y < m_boardSize; y++, x++) {
                 // Check bottom half of the board
-                if (m_boardValues[x][y] == playerValue)
+                if (m_boardValues[x][y] == playerValue) {
                     consecutiveCount1++;
-                else
+                    consecutivePieces1.add(new Point(x,y));
+                }
+                else {
                     consecutiveCount1 = 0;
+                    consecutivePieces1.clear();
+                }
 
                 // Check top half of the board
-                if (m_boardValues[y][x] == playerValue)
+                if (m_boardValues[y][x] == playerValue) {
                     consecutiveCount2++;
-                else
+                    consecutivePieces2.add(new Point(x,y));
+                }
+                else {
                     consecutiveCount2 = 0;
-                if (consecutiveCount1 >= MINIMUM_CONSECUTIVE_PIECES)
+                    consecutivePieces2.clear();
+                }
+
+                if (consecutiveCount1 >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
-                if (consecutiveCount2 >= MINIMUM_CONSECUTIVE_PIECES)
+                }
+                if (consecutiveCount2 >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
+                }
             }
         }
         // Check for diagonal pieces with +1 slope
@@ -133,22 +158,35 @@ public class GomokuGameState extends GameState {
             int x = 0;
             int consecutiveCount1 = 0;
             int consecutiveCount2 = 0;
+            List<Point> consecutivePieces1 = new ArrayList<>();
+            List<Point> consecutivePieces2 = new ArrayList<>();
             for (int y = startY; y >= 0; y--, x++) {
                 // Check bottom half of the board
-                if (m_boardValues[x][y] == playerValue)
+                if (m_boardValues[x][y] == playerValue) {
                     consecutiveCount1++;
-                else
+                    consecutivePieces1.add(new Point(x,y));
+                }
+                else {
                     consecutiveCount1 = 0;
+                    consecutivePieces1.clear();
+                }
 
                 // Check top half of the board
-                if (m_boardValues[m_boardSize-1-y][m_boardSize-1-x] == playerValue)
+                if (m_boardValues[m_boardSize-1-y][m_boardSize-1-x] == playerValue) {
                     consecutiveCount2++;
-                else
+                    consecutivePieces2.add(new Point(x,y));
+                }
+                else {
                     consecutiveCount2 = 0;
-                if (consecutiveCount1 >= MINIMUM_CONSECUTIVE_PIECES)
+                    consecutivePieces2.clear();
+                }
+
+                if (consecutiveCount1 >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
-                if (consecutiveCount2 >= MINIMUM_CONSECUTIVE_PIECES)
+                }
+                if (consecutiveCount2 >= MINIMUM_CONSECUTIVE_PIECES) {
                     return playerValue;
+                }
             }
         }
         return 0;
@@ -184,17 +222,23 @@ public class GomokuGameState extends GameState {
                 }
             }
         }
-        if (maxX == 0)
-            maxX = m_boardSize - 1;
-        if (maxY == 0)
-            maxY = m_boardSize - 1;
+        // If we are just starting out, then make a small play area in the middle
+        if ((maxX == 0) && (maxY == 0)) {
+            minX = (m_boardSize / 2) - 2;
+            minY = (m_boardSize / 2) - 2;
+            maxX = (m_boardSize / 2) + 2;
+            maxY = (m_boardSize / 2) + 2;
+        }
+
         for (Point emptySpace : emptySpaces) {
             int x = emptySpace.x;
             int y = emptySpace.y;
-            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY))
+            if ((x >= minX-1) && (x <= maxX+1) && (y >= minY-1) && (y <= maxY+1))
                 m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
             // If empty space is not in bound, then there is only a slight chance of being added to the list (exploration)
-            else if (random.nextInt(100) < 10)
+            else if (random.nextInt(100) < 1)
+                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
+            else if (m_possibleMoves.size() == 0)
                 m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
         }
     }
