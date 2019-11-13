@@ -11,9 +11,11 @@ public class TicTacToe {
 
     public static void main(String args[]) {
         int boardSize = 3;
-        int stepSize = 100000;
+        int stepSize = 10000;
+        // Time duration in milliseconds
+        long timeDuration = 250;
         float factor = 3;
-        int numberOfGames = 100;
+        int numberOfGames = 200;
         int loseCount = 0;
         for (int i = 0; i < numberOfGames; i++) {
             int[][] board = new int[boardSize][boardSize];
@@ -24,13 +26,14 @@ public class TicTacToe {
                 System.out.println("---------------");
                 if (playerNumber == 0) {
                     // Player X ( MCTS )
-                    MCTS mcts = new MCTS(stepSize, factor, gameState);
+                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
                     Move nextMove = mcts.uct_search();
                     gameState.moveToNextState(nextMove);
                 }
                 else {
-                    // Player O ( Random )
-                    Move nextMove = gameState.getNextMove();
+                    // Player O ( MCTS )
+                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
+                    Move nextMove = mcts.uct_search();
                     gameState.moveToNextState(nextMove);
                 }
                 playerNumber = (playerNumber + 1) % 2;
@@ -42,8 +45,10 @@ public class TicTacToe {
                 System.out.println(String.format("Player %s win!", gameState.getWinner().getName()));
                 if (gameState.getWinner().getId() == 2)
                     loseCount++;
+                if (gameState.getWinner().getId() == 1)
+                    loseCount++;
             }
         }
-        System.out.println(String.format("MCTS Winning Rate: %f", 1 - ((float) loseCount / (float) numberOfGames)));
+        System.out.println(String.format("MCTS Failure Rate: %f", (float) loseCount / (float) numberOfGames));
     }
 }

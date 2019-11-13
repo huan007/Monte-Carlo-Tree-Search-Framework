@@ -1,9 +1,13 @@
 package Game2048Example;
 
 import MCTS.GameState;
+import MCTS.MCTS;
 import MCTS.Move;
 import MCTS.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class GameState2048 extends GameState {
@@ -14,6 +18,29 @@ public class GameState2048 extends GameState {
 
     public final static Player player = new Player("Player", 1);
     public final static Player playerAI = new Player("AI", 2);
+    public final static int UPPERBOUND = factorial(9);
+
+    public static MCTS.RewardFunctionInterface<GameState2048> rewardFunction = new MCTS.RewardFunctionInterface<GameState2048>() {
+        @Override
+        public float calculateReward(GameState2048 gameState) {
+            int boardSize = gameState.m_boardSize;
+            int[][] boardValues = gameState.m_boardValues;
+            int largestValue = 0;
+            HashMap<Integer, List<Point>> tileMap = new HashMap<>();
+            for (int x = 0; x < boardSize; x++) {
+                for (int y = 0; y < boardSize; y++) {
+                    int value = boardValues[x][y];
+                    if (value > largestValue)
+                        largestValue = value;
+                    if (!tileMap.containsKey(value))
+                        tileMap.put(value, new ArrayList<>());
+                    // Add coordinate to the list for that tile value (i.e 16 at (0,1))
+                    tileMap.get(value).add(new Point(x,y));
+                }
+            }
+            return (float) largestValue / (float) 16;
+        }
+    };
 
     public GameState2048(Player player, int[][] values, int boardSize, int score, int rootLargestValue) {
         super(player);
@@ -50,19 +77,13 @@ public class GameState2048 extends GameState {
     }
 
     @Override
-    protected void determineTerminalAndWinner() {
-        // Determine if terminal
-        m_isTerminal = !checkIfCanGo(m_boardValues);
-        int largestValue = 0;
-        for (int x = 0; x < m_boardSize; x++) {
-            for (int y = 0; y < m_boardSize; y++) {
-                if (m_boardValues[x][y] > largestValue)
-                    largestValue = m_boardValues[x][y];
-            }
-        }
-        // Only "win" if we made impressive progress
-        if (largestValue >= 13)
-            m_winner = player;
+    protected boolean determineTerminal() {
+        return !checkIfCanGo(m_boardValues);
+    }
+
+    @Override
+    protected Player determineWinner() {
+        return player;
     }
 
     @Override
@@ -241,5 +262,14 @@ public class GameState2048 extends GameState {
             Random random = new Random();
             return values()[random.nextInt(values().length)];
         }
+    }
+
+    public static int factorial(int n) {
+        int result = 1;
+        while (n > 1) {
+            result *= n;
+            n--;
+        }
+        return result;
     }
 }

@@ -45,46 +45,56 @@ public class TicTacToeGameState extends GameState {
     }
 
     @Override
-    protected void determineTerminalAndWinner() {
-        // Check if terminal
-        m_isTerminal = true;
+    protected boolean determineTerminal() {
+        // Assume terminal by default
+        boolean isTerminal = true;
+        // If there is still room for another move
         for (int x = 0; x < m_boardSize; x++) {
             for (int y = 0; y < m_boardSize; y++) {
                 if (m_boardValues[x][y] == 0)
-                    m_isTerminal = false;
+                    isTerminal = false;
             }
         }
+        // If the player that just went won return true
+        if (determineIfPlayerWin(m_player.getId()) == m_player.getId())
+            return true;
+        return isTerminal;
+    }
+
+    @Override
+    protected Player determineWinner() {
         int value = m_player.getId();
+        if (determineIfPlayerWin(value) == value)
+            return m_player;
+        else return null;
+    }
+
+    private int determineIfPlayerWin(int playerValue) {
         // Check for consecutive vertical pieces
         for (int x = 0; x < m_boardSize; x++) {
             int consecutiveCount = 0;
             for (int y = 0; y < m_boardSize; y++) {
-                if (m_boardValues[x][y] == value)
+                if (m_boardValues[x][y] == playerValue)
                     consecutiveCount++;
                 else
                     break;
-
             }
             if (consecutiveCount == m_boardSize) {
-                m_winner = m_player;
-                m_isTerminal = true;
-                return;
+                return playerValue;
             }
         }
         // Check for consecutive horizontal pieces
         for (int y = 0; y < m_boardSize; y++) {
             int consecutiveCount = 0;
             for (int x = 0; x < m_boardSize; x++) {
-                if (m_boardValues[x][y] == value)
+                if (m_boardValues[x][y] == playerValue)
                     consecutiveCount++;
                 else
                     break;
 
             }
             if (consecutiveCount == m_boardSize) {
-                m_winner = m_player;
-                m_isTerminal = true;
-                return;
+                return playerValue;
             }
         }
         // Check for diagonal pieces
@@ -92,7 +102,7 @@ public class TicTacToeGameState extends GameState {
         int y = 0;
         int consecutiveCount = 0;
         for (int i = 0; i < m_boardSize; i++) {
-            if (m_boardValues[x][y] == value) {
+            if (m_boardValues[x][y] == playerValue) {
                 consecutiveCount++;
                 x++;
                 y++;
@@ -101,16 +111,14 @@ public class TicTacToeGameState extends GameState {
                 break;
         }
         if (consecutiveCount == m_boardSize) {
-            m_winner = m_player;
-            m_isTerminal = true;
-            return;
+            return playerValue;
         }
 
         x = m_boardSize-1;
         y = 0;
         consecutiveCount = 0;
         for (int i = 0; i < m_boardSize; i++) {
-            if (m_boardValues[x][y] == value) {
+            if (m_boardValues[x][y] == playerValue) {
                 consecutiveCount++;
                 x--;
                 y++;
@@ -119,10 +127,9 @@ public class TicTacToeGameState extends GameState {
                 break;
         }
         if (consecutiveCount == m_boardSize) {
-            m_winner = m_player;
-            m_isTerminal = true;
-            return;
+            return playerValue;
         }
+        return 0;
     }
 
     @Override
