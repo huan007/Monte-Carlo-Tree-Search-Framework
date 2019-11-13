@@ -4,6 +4,10 @@ import MCTS.GameState;
 import MCTS.Move;
 import MCTS.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class GomokuGameState extends GameState {
     int[][] m_boardValues;
     int m_boardSize;
@@ -152,7 +156,47 @@ public class GomokuGameState extends GameState {
 
     @Override
     protected void generateNextPossibleMoves() {
-        // TODO:
+        m_possibleMoves.clear();
+        Random random = new Random();
+        // Boundaries
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+        // List of empty spaces
+        List<Point> emptySpaces = new ArrayList<>();
+        for (int x = 0; x < m_boardSize; x++) {
+            for (int y = 0; y < m_boardSize; y++) {
+                int value = m_boardValues[x][y];
+                // Empty Spaces
+                if (value == 0)
+                    emptySpaces.add(new Point(x,y));
+                // Non empty
+                else {
+                    if (minX == 0)
+                        minX = x;
+                    if (minY == 0)
+                        minY = y;
+                    if (x > maxX)
+                        maxX = x;
+                    if (y > maxY)
+                        maxY = y;
+                }
+            }
+        }
+        if (maxX == 0)
+            maxX = m_boardSize - 1;
+        if (maxY == 0)
+            maxY = m_boardSize - 1;
+        for (Point emptySpace : emptySpaces) {
+            int x = emptySpace.x;
+            int y = emptySpace.y;
+            if ((x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY))
+                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
+            // If empty space is not in bound, then there is only a slight chance of being added to the list (exploration)
+            else if (random.nextInt(100) < 10)
+                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
+        }
     }
 
     @Override
