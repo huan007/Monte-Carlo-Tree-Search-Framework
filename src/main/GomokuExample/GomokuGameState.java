@@ -236,7 +236,7 @@ public class GomokuGameState extends GameState {
             if ((x >= minX-1) && (x <= maxX+1) && (y >= minY-1) && (y <= maxY+1))
                 m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
             // If empty space is not in bound, then there is only a slight chance of being added to the list (exploration)
-            else if (random.nextInt(100) < 1)
+            else if (random.nextInt(100) < 0)
                 m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
             else if (m_possibleMoves.size() == 0)
                 m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
