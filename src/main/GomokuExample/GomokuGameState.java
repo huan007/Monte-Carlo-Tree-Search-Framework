@@ -1,12 +1,11 @@
 package GomokuExample;
 
 import MCTS.GameState;
+import MCTS.MCTS;
 import MCTS.Move;
 import MCTS.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GomokuGameState extends GameState {
     int[][] m_boardValues;
@@ -15,6 +14,10 @@ public class GomokuGameState extends GameState {
     public final static Player BLACK_PLAYER = new Player("b", 1);
     public final static Player WHITE_PLAYER = new Player("w", 2);
     public final static int MINIMUM_CONSECUTIVE_PIECES = 5;
+    public final static Point[] DIRECTIONS8 = new Point[] {
+            new Point(1,0), new Point(0,1), new Point(-1,0), new Point(0,-1),
+            new Point(1, 1), new Point(-1, 1), new Point(-1,-1), new Point(1,-1)
+    };
 
     public GomokuGameState(Player player, int[][] boardValues) {
         super(player);
@@ -196,50 +199,64 @@ public class GomokuGameState extends GameState {
     protected void generateNextPossibleMoves() {
         m_possibleMoves.clear();
         Random random = new Random();
-        // Boundaries
-        int minX = 0;
-        int maxX = 0;
-        int minY = 0;
-        int maxY = 0;
-        // List of empty spaces
-        List<Point> emptySpaces = new ArrayList<>();
+        List<Point> myPieces = new ArrayList<>();
+        List<Point> nextPlayerPieces = new ArrayList<>();
+        // Use a Set for move so there will not be duplicated moves
+        HashMap<String, GomokuMove> moveSet = new HashMap<>();
+        int myValue = m_player.getId();
+        int nextPlayerValue = m_nextPlayer.getId();
         for (int x = 0; x < m_boardSize; x++) {
             for (int y = 0; y < m_boardSize; y++) {
                 int value = m_boardValues[x][y];
-                // Empty Spaces
-                if (value == 0)
-                    emptySpaces.add(new Point(x,y));
-                // Non empty
-                else {
-                    if (minX == 0)
-                        minX = x;
-                    if (minY == 0)
-                        minY = y;
-                    if (x > maxX)
-                        maxX = x;
-                    if (y > maxY)
-                        maxY = y;
+                if (value == myValue)
+                    myPieces.add(new Point(x,y));
+                else if (value == nextPlayerValue)
+                    nextPlayerPieces.add(new Point(x,y));
+            }
+        }
+        // Adding possible moves that advance myself
+        for (Point piece : myPieces) {
+            int x = piece.x;
+            int y = piece.y;
+            // Check for empty spaces around particular pieces
+            for (Point direction : DIRECTIONS8) {
+                int newX = x + direction.x;
+                int newY = y + direction.y;
+                // Check to make sure coordinate is not out of bound
+                if ((newX > -1) && (newX < m_boardSize) && (newY > -1) && (newY < m_boardSize)) {
+                    // If this is an empty space then add to moveSet
+                    if (m_boardValues[newX][newY] == 0) {
+                        Point newPoint = new Point(newX, newY);
+                        GomokuMove newMove = new GomokuMove(newPoint.toString(), newPoint);
+                        moveSet.put(newMove.toString(), newMove);
+                    }
                 }
             }
         }
-        // If we are just starting out, then make a small play area in the middle
-        if ((maxX == 0) && (maxY == 0)) {
-            minX = (m_boardSize / 2) - 2;
-            minY = (m_boardSize / 2) - 2;
-            maxX = (m_boardSize / 2) + 2;
-            maxY = (m_boardSize / 2) + 2;
+        // Adding possible moves that deter the opponent
+        for (Point piece : nextPlayerPieces) {
+            int x = piece.x;
+            int y = piece.y;
+            // Check for empty spaces around particular pieces
+            for (Point direction : DIRECTIONS8) {
+                int newX = x + direction.x;
+                int newY = y + direction.y;
+                // Check to make sure coordinate is not out of bound
+                if ((newX > -1) && (newX < m_boardSize) && (newY > -1) && (newY < m_boardSize)) {
+                    // If this is an empty space then add to moveSet
+                    if (m_boardValues[newX][newY] == 0) {
+                        Point newPoint = new Point(newX, newY);
+                        GomokuMove newMove = new GomokuMove(newPoint.toString(), newPoint);
+                        moveSet.put(newMove.toString(), newMove);
+                    }
+                }
+            }
         }
-
-        for (Point emptySpace : emptySpaces) {
-            int x = emptySpace.x;
-            int y = emptySpace.y;
-            if ((x >= minX-1) && (x <= maxX+1) && (y >= minY-1) && (y <= maxY+1))
-                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
-            // If empty space is not in bound, then there is only a slight chance of being added to the list (exploration)
-            else if (random.nextInt(100) < 0)
-                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
-            else if (m_possibleMoves.size() == 0)
-                m_possibleMoves.add(new GomokuMove(emptySpace.toString(), emptySpace));
+        // Add unique moves to possible moves
+        m_possibleMoves.addAll(moveSet.values());
+        if (m_possibleMoves.size() == 0) {
+            Point startingPoint = new Point(m_boardSize/2, m_boardSize / 2);
+            m_possibleMoves.add(new GomokuMove(startingPoint.toString(), startingPoint));
         }
     }
 

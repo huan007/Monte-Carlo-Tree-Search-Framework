@@ -6,6 +6,16 @@ public class GomokuMove<Point> extends MCTS.Move {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GomokuMove))
+            return false;
+        else {
+            GomokuMove otherMove = (GomokuMove) obj;
+            return m_moveValue.equals(otherMove);
+        }
+    }
+
+    @Override
     public String toString() {
         return (m_moveValue).toString();
     }
