@@ -11,10 +11,10 @@ public class Gomoku {
         int boardSize = 19;
         int[][] board = new int[boardSize][boardSize];
         GomokuGameState gameState = new GomokuGameState(GomokuGameState.WHITE_PLAYER, board);
-        int stepSize = 50000;
+        int stepSize = 3000;
         // Time duration in milliseconds
         long timeDuration = 500;
-        float factor = (float) 1.65;
+        float factor = (float) 0.8;
         System.out.println(gameState.toString());
         System.out.println("---------------");
         while (!gameState.isTerminal()) {
