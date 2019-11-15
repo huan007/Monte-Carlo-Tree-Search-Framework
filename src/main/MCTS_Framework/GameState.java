@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 import java.util.ArrayList;
 import java.util.List;

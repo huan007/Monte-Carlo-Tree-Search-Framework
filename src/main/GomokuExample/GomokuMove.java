@@ -1,6 +1,6 @@
 package GomokuExample;
 
-public class GomokuMove<Point> extends MCTS.Move {
+public class GomokuMove<Point> extends MCTS_Framework.Move {
     public GomokuMove(String moveName, Point moveValue) {
         super(moveName, moveValue);
     }

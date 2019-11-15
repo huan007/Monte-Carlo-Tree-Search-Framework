@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 public class Move<T> {
     protected String m_moveName;

@@ -1,6 +1,6 @@
 package TicTacToeExample;
 
-public class TicTacToeMove<Point> extends MCTS.Move {
+public class TicTacToeMove<Point> extends MCTS_Framework.Move {
     public TicTacToeMove(String moveName, Point moveValue) {
         super(moveName, moveValue);
     }

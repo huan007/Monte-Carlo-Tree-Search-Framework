@@ -1,7 +1,7 @@
 package Game2048Example;
 
-import MCTS.MCTS;
-import MCTS.Move;
+import MCTS_Framework.MCTS;
+import MCTS_Framework.Move;
 
 public class Game2048 {
 

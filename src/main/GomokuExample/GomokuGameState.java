@@ -1,9 +1,8 @@
 package GomokuExample;
 
-import MCTS.GameState;
-import MCTS.MCTS;
-import MCTS.Move;
-import MCTS.Player;
+import MCTS_Framework.GameState;
+import MCTS_Framework.Move;
+import MCTS_Framework.Player;
 
 import java.util.*;
 

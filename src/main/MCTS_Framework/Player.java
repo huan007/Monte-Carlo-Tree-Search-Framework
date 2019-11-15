@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 public class Player {
     private String m_name;

@@ -1,9 +1,8 @@
 package TicTacToeExample;
 
-import MCTS.GameState;
-import MCTS.MCTS;
-import MCTS.Move;
-import MCTS.Player;
+import MCTS_Framework.MCTS;
+import MCTS_Framework.Move;
+import MCTS_Framework.Player;
 
 public class TicTacToe {
     public static final Player playerX = new Player("x", 1);

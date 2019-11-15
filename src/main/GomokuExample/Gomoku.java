@@ -1,9 +1,7 @@
 package GomokuExample;
 
-import MCTS.MCTS;
-import MCTS.Move;
-
-import java.util.Scanner;
+import MCTS_Framework.MCTS;
+import MCTS_Framework.Move;
 
 public class Gomoku {
 
