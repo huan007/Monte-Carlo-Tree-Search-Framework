@@ -1,6 +1,7 @@
 package TicTacToeExample;
 
 import MCTS_Framework.MCTS;
+import MCTS_Framework.MCTS_Multi;
 import MCTS_Framework.Move;
 import MCTS_Framework.Player;
 
@@ -10,7 +11,8 @@ public class TicTacToe {
 
     public static void main(String args[]) {
         int boardSize = 3;
-        int stepSize = 10000;
+        int stepSize = 2000;
+        int threadCount = Runtime.getRuntime().availableProcessors() / 2;
         // Time duration in milliseconds
         long timeDuration = 250;
         float factor = 3;
@@ -25,14 +27,14 @@ public class TicTacToe {
                 System.out.println("---------------");
                 if (playerNumber == 0) {
                     // Player X ( MCTS )
-                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
-                    Move nextMove = mcts.uct_search();
+                    MCTS_Multi mcts_multi = new MCTS_Multi(threadCount, stepSize, timeDuration, factor, gameState);
+                    Move nextMove = mcts_multi.multi_uct_search();
                     gameState.moveToNextState(nextMove);
                 }
                 else {
                     // Player O ( MCTS )
-                    MCTS mcts = new MCTS(stepSize, timeDuration, factor, gameState);
-                    Move nextMove = mcts.uct_search();
+                    MCTS_Multi mcts_multi = new MCTS_Multi(threadCount, stepSize, timeDuration, factor, gameState);
+                    Move nextMove = mcts_multi.multi_uct_search();
                     gameState.moveToNextState(nextMove);
                 }
                 playerNumber = (playerNumber + 1) % 2;

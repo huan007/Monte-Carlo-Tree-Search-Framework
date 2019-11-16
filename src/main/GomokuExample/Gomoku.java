@@ -7,9 +7,9 @@ import MCTS_Framework.Move;
 public class Gomoku {
 
     public static void main(String[] args) {
-        int boardSize = 19;
+        int boardSize = 10;
         int[][] board = new int[boardSize][boardSize];
-        GomokuGameState gameState = new GomokuGameState(GomokuGameState.WHITE_PLAYER, board);
+        GomokuGameState gameState = new GomokuGameState(GomokuGameState.WHITE_PLAYER, board, boardSize);
         int stepSize = 3000;
         int threadCount = Runtime.getRuntime().availableProcessors() / 2;
         // Time duration in milliseconds
