@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,14 @@ public class MCTSNode {
     private Move m_lastMove;
     private List<MCTSNode> m_children;
     private GameState m_gameState;
+
+    protected MCTSNode(MCTSNode parent) {
+        m_visitCount = 0;
+        m_winCount = 0;
+        m_parent = parent;
+        m_lastMove = null;
+        m_children = new ArrayList<>();
+    }
 
     public MCTSNode(GameState gameState, MCTSNode parent) {
         m_visitCount = 0;
@@ -64,6 +72,14 @@ public class MCTSNode {
         return newMCTSNode;
     }
 
+    protected void setWinCount(float winCount) {
+        m_winCount = winCount;
+    }
+
+    protected void setVisitCount(int visitCount) {
+        m_visitCount = visitCount;
+    }
+
     public void setLastMove(Move move) {
         m_lastMove = move;
     }
@@ -75,5 +91,10 @@ public class MCTSNode {
     public boolean isFullyExpanded() {
         // If there are not any possible moves left, then node is fully expanded
         return m_gameState.getPossibleMoves().size() == 0;
+    }
+
+    @Override
+    public String toString() {
+        return m_gameState.toString();
     }
 }

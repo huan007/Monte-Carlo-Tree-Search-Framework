@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 public class SimulationResult {
     Player m_winner;

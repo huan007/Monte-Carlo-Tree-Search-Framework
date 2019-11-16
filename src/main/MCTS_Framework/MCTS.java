@@ -1,4 +1,4 @@
-package MCTS;
+package MCTS_Framework;
 
 import java.util.List;
 
@@ -16,6 +16,12 @@ public class MCTS {
 
     public static class Builder {
 
+    }
+
+    protected MCTS() {
+        m_globalVisitCount = 0;
+        m_stepCount = 100;
+        m_rootMCTSNode = new MCTSNode(null);
     }
 
     public MCTS(int iterationsCount, long timeDuration, float factor, GameState gameState) {
@@ -57,6 +63,10 @@ public class MCTS {
                 backPropagation(leafMCTSNode, result.getWinner(), result.getRewardValue());
             }
         }
+        return getBestMove();
+    }
+
+    public Move getBestMove() {
         float maxValue = -Float.MAX_VALUE;
         int choiceIndex = 0;
         for (int i = 0; i < m_rootMCTSNode.getChildren().size(); i++) {
@@ -72,7 +82,7 @@ public class MCTS {
                 choiceIndex = i;
             }
         }
-        return ((MCTSNode) m_rootMCTSNode.getChildren().get(choiceIndex)).getLastMove();
+        return (m_rootMCTSNode.getChildren().get(choiceIndex)).getLastMove();
     }
 
     private MCTSNode selection(MCTSNode rootMCTSNode, int globalVisitCount) {
@@ -142,6 +152,10 @@ public class MCTS {
             // MCTS.Move up the tree
             node = node.getParent();
         }
+    }
+
+    public MCTSNode getRootMCTSNode() {
+        return m_rootMCTSNode;
     }
 
     public void setRewardFunction(RewardFunctionInterface rewardFunction) {

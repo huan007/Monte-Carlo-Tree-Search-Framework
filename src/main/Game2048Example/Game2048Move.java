@@ -1,6 +1,6 @@
 package Game2048Example;
 
-import MCTS.Move;
+import MCTS_Framework.Move;
 
 public class Game2048Move extends Move<Integer> {
     public Game2048Move(String moveName, Integer moveValue) {

@@ -1,8 +1,8 @@
 package TicTacToeExample;
 
-import MCTS.GameState;
-import MCTS.Move;
-import MCTS.Player;
+import MCTS_Framework.GameState;
+import MCTS_Framework.Move;
+import MCTS_Framework.Player;
 
 public class TicTacToeGameState extends GameState {
     int[][] m_boardValues;

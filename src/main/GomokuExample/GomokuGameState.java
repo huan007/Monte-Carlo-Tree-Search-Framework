@@ -1,9 +1,8 @@
 package GomokuExample;
 
-import MCTS.GameState;
-import MCTS.MCTS;
-import MCTS.Move;
-import MCTS.Player;
+import MCTS_Framework.GameState;
+import MCTS_Framework.Move;
+import MCTS_Framework.Player;
 
 import java.util.*;
 
@@ -20,10 +19,10 @@ public class GomokuGameState extends GameState {
             new Point(1, 1), new Point(-1, 1), new Point(-1,-1), new Point(1,-1)
     };
 
-    public GomokuGameState(Player player, int[][] boardValues) {
+    public GomokuGameState(Player player, int[][] boardValues, int boardSize) {
         super(player);
         m_boardValues = boardValues;
-        m_boardSize = 19;
+        m_boardSize = boardSize;
         generateNextPossibleMoves();
     }
 
